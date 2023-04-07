@@ -1,27 +1,17 @@
 import React from "react";
-import TextInput from "@/components/TextInput";
 import MessageBox from "@/components/MessageBox/MessageBox";
-import useChatGPT from '@/hooks/use-chat-gpt'
+import Scaffolding from '@/components/Scaffolding/Scaffolding'
+import useCompletion from '@/hooks/use-completion.hook'
+import QueryForm from '@/components/QueryForm/QueryForm'
 
 const Chat: React.FC = () => {
-  const { sendQuery, response } = useChatGPT();
+  const {completion, sendQuery} = useCompletion();
+
   return (
-    <div>
-      <MessageBox sender={"GPT"} message={response} />
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          const form = e.currentTarget
-          const inputElement = form.elements.namedItem('query-field') as HTMLInputElement;
-          sendQuery(inputElement.value);
-        }}
-      >
-        <TextInput id={"query-field"} />
-        <button onClick={() => sendQuery} type={"submit"}>
-          Send
-        </button>
-      </form>
-    </div>
+    <Scaffolding>
+      <QueryForm onSubmit={sendQuery} />
+      { completion && <MessageBox sender={"GPT"} message={completion} /> }
+    </Scaffolding>
   );
 };
 
