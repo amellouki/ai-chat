@@ -1,6 +1,6 @@
 # AI Chat
 
-Base project to build a custom chatbot that requires knowledge from configurable documentations
+Next project of an AI powered chat to query docs from [the completion api](https://github.com/amellouki/ai-doc-query-completion)
 
 Using
 
