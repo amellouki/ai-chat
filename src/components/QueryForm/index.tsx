@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import TextInput from '@/components/TextInput'
-import Button from '@/components/Button/Button'
+import Button from '@/components/Button'
 
 type QueryFormProps = {
   onSubmit: (query: string) => void;

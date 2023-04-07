@@ -1,8 +1,8 @@
 import React from "react";
-import MessageBox from "@/components/MessageBox/MessageBox";
-import Scaffolding from '@/components/Scaffolding/Scaffolding'
+import MessageBox from "@/components/MessageBox";
+import Scaffolding from '@/components/Scaffolding'
+import QueryForm from '@/components/QueryForm'
 import useCompletion from '@/hooks/use-completion.hook'
-import QueryForm from '@/components/QueryForm/QueryForm'
 
 const Chat: React.FC = () => {
   const {completion, sendQuery} = useCompletion();
