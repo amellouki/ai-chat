@@ -4,6 +4,7 @@ import { END_COMPLETION } from '@/constants'
 
 const useCompletion = () => {
   const [completion, setCompletion] = useState('');
+  const [debug, setDebug] = useState<any>();
 
   const sendQuery = useCallback((query: string) => {
     const eventSource = getCompletionEventSource(query);
@@ -13,7 +14,12 @@ const useCompletion = () => {
         eventSource.close();
         return;
       }
-      setCompletion(JSON.parse(event.data));
+      const data = JSON.parse(event.data)
+      if (data.type === 'debug') {
+        setDebug(data.content);
+        return;
+      }
+      setCompletion(data.content);
     };
 
     return () => {
@@ -21,7 +27,7 @@ const useCompletion = () => {
     };
   }, []);
 
-  return { completion, sendQuery };
+  return { completion, sendQuery, debug };
 }
 
 export default useCompletion
