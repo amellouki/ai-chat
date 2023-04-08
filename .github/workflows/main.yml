@@ -1,0 +1,48 @@
+name: Deploy Next.js App
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: #enable manual triggers
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build the Docker container
+      run: docker build -t my-next-app .
+
+    - name: Build the Next.js application
+      run: docker run --rm my-next-app npm run build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Deploy to EC2
+      env:
+        PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+        HOSTNAME: ${{ secrets.HOSTNAME }}
+        USER_NAME: ${{ secrets.USER_NAME }}
+        NEXT_PUBLIC_BACKEND_API: ${{ secrets.NEXT_PUBLIC_BACKEND_API }}
+      run: |
+        echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+        
+        ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
+          cd /home/ubuntu/portfolio/ai-chat &&
+          git checkout main &&
+          git fetch --all &&
+          git reset --hard origin/main &&
+          git pull origin main &&
+          echo "NEXT_PUBLIC_BACKEND_API=$NEXT_PUBLIC_BACKEND_API" > .env.production &&
+          docker build -t my-next-app . &&
+          docker stop next-app-container &&
+          docker rm next-app-container &&
+          docker run -d --name next-app-container -p 3600:3000 -e NODE_ENV=production my-next-app
+        '
