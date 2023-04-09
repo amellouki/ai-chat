@@ -1,6 +1,6 @@
 # AI Chat
 
-Next project of an AI powered chat to query docs from [the completion api](https://github.com/amellouki/ai-doc-query-completion)
+Next.js AI chat client that connects you to a data-aware GPT powered [api service](https://github.com/amellouki/ai-doc-query-completion)
 
 ## You need
 
