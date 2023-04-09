@@ -2,9 +2,9 @@
 
 Next project of an AI powered chat to query docs from [the completion api](https://github.com/amellouki/ai-doc-query-completion)
 
-Using
-
 ## You need
+
+Node 18.15.0
 
 ## Getting Started
 
