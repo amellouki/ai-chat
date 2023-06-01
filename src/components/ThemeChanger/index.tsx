@@ -1,36 +1,85 @@
-import React, {FunctionComponent, useEffect, useState} from 'react';
+import React, {FunctionComponent, useCallback, useEffect, useRef, useState} from 'react';
+import clsx from "clsx";
 
-type ThemeType = 'dark' | 'light';
+const Themes = [
+  'dark',
+  'light'
+] as const
+
+const ThemePreferences = [
+  ...Themes,
+  'system'
+] as const
+
+type ThemeType = typeof Themes[number]
+
+type ThemePreferenceType = typeof ThemePreferences[number];
 
 const ThemeChanger: FunctionComponent = (props) => {
-    const [currentTheme, setCurrentTheme] = useState<ThemeType>()
+  const [themePreference, setThemePreference] = useState<ThemePreferenceType>('system')
+  const colorSchemeQueryList = useRef<MediaQueryList>()
+  const prefersColorSchemeHandler = useRef<(e: MediaQueryListEvent) => void>()
 
-    useEffect(() => {
-        const root = window.document.documentElement;
-        const initialTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  const appendHandler =  useCallback(() => {
+    prefersColorSchemeHandler.current = (e: MediaQueryListEvent) => {
+      setThemeDOM(e.matches ? 'dark' : 'light')
+    }
+    colorSchemeQueryList.current?.addEventListener('change', prefersColorSchemeHandler.current)
+  }, [])
 
-        root.setAttribute('data-theme', initialTheme);
-        root.classList.add(`${initialTheme}-theme`);
+  const removeHandler = useCallback(() => {
+    if (prefersColorSchemeHandler.current) {
+      colorSchemeQueryList.current?.removeEventListener('change', prefersColorSchemeHandler.current)
+      prefersColorSchemeHandler.current = undefined
+    }
+  }, []);
 
-        setCurrentTheme(initialTheme)
-    }, [setCurrentTheme]);
+  useEffect(() => {
+    colorSchemeQueryList.current = window.matchMedia('(prefers-color-scheme: dark)')
+    const systemTheme = colorSchemeQueryList.current.matches ? 'dark' : 'light';
+    setThemeDOM(systemTheme)
+    setThemePreference('system')
+    appendHandler()
+    return () => {
+      removeHandler()
+    }
+  }, [setThemePreference, appendHandler, removeHandler]);
 
-    const toggleTheme = () => {
-        const root = window.document.documentElement;
-        const currentTheme = root.getAttribute('data-theme');
-
-        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-        root.setAttribute('data-theme', newTheme);
-        root.classList.remove(`${currentTheme}-theme`);
-        root.classList.add(`${newTheme}-theme`);
-
-        setCurrentTheme(newTheme)
-    };
-
-    return (
-        <button onClick={toggleTheme}>Toggle Theme currently: {currentTheme}</button>
-    );
+  const updateTheme = useCallback((preference: ThemePreferenceType) => {
+    setThemePreference(preference)
+    if (preference === 'system') {
+      const systemTheme = colorSchemeQueryList.current?.matches ? 'dark' : 'light';
+      setThemeDOM(systemTheme)
+      appendHandler();
+    } else {
+      removeHandler();
+      setThemeDOM(preference)
+    }
+  }, [appendHandler, removeHandler])
+  // TODO: Style button group & make it a11ble
+  return (
+    <div>
+      {ThemePreferences.map((preference) => (
+        <button
+          onClick={() => updateTheme(preference)}
+          aria-label={`Change theme to ${performance}`}
+          aria-pressed={preference === themePreference}
+          className={clsx(preference === themePreference && 'active')}
+          key={preference}>
+          {preference}
+        </button>
+      ))}
+    </div>
+  );
 
 }
 
 export default ThemeChanger;
+
+function setThemeDOM(newTheme: ThemeType) {
+  const root = window.document.documentElement;
+  root.setAttribute('data-theme', newTheme);
+  const currentTheme = newTheme === 'light' ? 'dark' : 'light'
+  root.classList.remove(`${currentTheme}-theme`);
+  root.classList.add(`${newTheme}-theme`);
+}
