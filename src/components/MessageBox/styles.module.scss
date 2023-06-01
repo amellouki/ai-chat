@@ -1,0 +1,32 @@
+.messageBox {
+  display: flex;
+  padding: 0.625rem;
+  align-items: flex-start;
+  width: 100%;
+  border-radius: 0.5rem;
+  border-width: 1px;
+  border-color: var(--primary-border);
+  gap: 0.5rem;
+  background-color: var(--primary-background);
+}
+
+.messageBox.alternate {
+  background-color: var(--secondary-background);
+}
+
+.messageText {
+  font-weight: 400;
+  flex: 1 1 0%;
+}
+
+.sender {
+  text-align: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 100%;
+  background-color: var(--amber);
+  span {
+    display: inline-block;
+    line-height: 2rem;
+  }
+}

@@ -1,6 +1,7 @@
 import React, { FC } from 'react'
 import TextInput from '@/components/TextInput'
 import Button from '@/components/Button'
+import styles from './styles.module.scss'
 
 type QueryFormProps = {
   onSubmit: (query: string) => void;
@@ -9,7 +10,7 @@ type QueryFormProps = {
 const QueryForm: FC<QueryFormProps> = ({ onSubmit }) => {
   return (
     <form
-      className="flex w-full content-center flex-row space-x-2"
+      className={styles.form}
       onSubmit={(e) => {
         e.preventDefault();
         const form = e.currentTarget;
@@ -19,7 +20,7 @@ const QueryForm: FC<QueryFormProps> = ({ onSubmit }) => {
         onSubmit(inputElement.value);
       }}
     >
-      <TextInput id={"query-field"} className={'flex-1'} />
+      <TextInput id={"query-field"} className={styles.fillRest} />
       <Button type="submit">Send</Button>
     </form>
   )
