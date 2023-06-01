@@ -62,7 +62,7 @@ const ThemeChanger: FunctionComponent = (props) => {
       {ThemePreferences.map((preference) => (
         <button
           onClick={() => updateTheme(preference)}
-          aria-label={`Change theme to ${performance}`}
+          aria-label={`Change theme to ${preference}`}
           aria-pressed={preference === themePreference}
           className={clsx(preference === themePreference && 'active')}
           key={preference}>
