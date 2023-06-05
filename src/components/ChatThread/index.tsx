@@ -1,36 +1,21 @@
-import React, { FunctionComponent, useEffect } from 'react'
+import React, {FunctionComponent, useEffect} from 'react'
 import MessageBox from '@/components/MessageBox'
-import chatThreadMock from '@/mock-data/chat-thread'
+import styles from './styles.module.scss'
+import {ChatHistory} from "@/types/ChatRequest";
 
 type ChatThreadProps = {
   completion: string
+  chatHistory: ChatHistory
 }
 
-async function sendMessage() {
-  const api = process.env.NEXT_PUBLIC_BACKEND_API + '/chat-session'
-  console.log('fetching', api)
-  const res = await fetch(api, {
-    method: 'GET',
-    credentials: 'include',
-    headers: {
-      'Authorization': 'Bearer secret'
-    }
-  })
-  console.log(res)
-}
-
-const ChatThread: FunctionComponent<ChatThreadProps> = ({ completion }) => {
-  // test session
-  useEffect(() => {
-    sendMessage().then(sendMessage)
-  }, [])
+const ChatThread: FunctionComponent<ChatThreadProps> = ({chatHistory, completion}) => {
 
   return (
-    <div>
-      {completion && <MessageBox sender={"GPT"} message={completion} />}
-      {/* {chatThreadMock.messages.map(({sender, id, text}, key) => (*/}
-      {/*  <MessageBox key={id} sender={sender} alternate={key % 2 === 0} message={text} />*/}
-      {/* ))}*/}
+    <div className={styles.chatThread}>
+      {chatHistory.map(({content, type}, key) => (
+        <MessageBox key={key} sender={type} alternate={key % 2 === 0} message={content}/>
+      ))}
+      {completion && <MessageBox sender={"ai"} message={completion}/>}
     </div>
   )
 }

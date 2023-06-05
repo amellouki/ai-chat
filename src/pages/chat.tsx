@@ -1,22 +1,30 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React from "react";
 import MessageBox from "@/components/MessageBox";
 import Scaffolding from "@/components/Scaffolding";
 import QueryForm from "@/components/QueryForm";
-import useCompletion from "@/hooks/use-completion.hook";
 import DebugDocs from "@/components/DebugDocs";
 import UploadPDF from "@/components/UploadPDF";
 import ThemeChanger from "@/components/ThemeChanger";
+import ChatThread from "@/components/ChatThread";
+import useChatHistory from "@/hooks/use-chat-history.hook";
+import useConversation from "@/hooks/use-conversation.hook";
 
 const Chat: React.FC = () => {
-  const { completion, sendQuery, debug } = useCompletion();
+  const {history, appendMessage} = useChatHistory();
+  const {completion, sendQuestion, resources} = useConversation((response) => {
+    appendMessage(response, 'ai')
+  });
 
   return (
     <Scaffolding>
-      <QueryForm onSubmit={sendQuery} />
-      {completion && <MessageBox sender={"GPT"} message={completion} />}
-      {debug && <DebugDocs docs={debug} />}
-      <UploadPDF />
-      <ThemeChanger />
+      <ChatThread chatHistory={history} completion={completion}/>
+      <QueryForm onSubmit={(question: string) => {
+        appendMessage(question, "human");
+        sendQuestion(history, question);
+      }}/>
+      {resources && <DebugDocs docs={resources}/>}
+      <UploadPDF/>
+      <ThemeChanger/>
     </Scaffolding>
   );
 };

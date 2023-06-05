@@ -1,13 +1,28 @@
+$border-radius: 0.5rem;
+
 .messageBox {
   display: flex;
   padding: 0.625rem;
   align-items: flex-start;
   width: 100%;
-  border-radius: 0.5rem;
-  border-width: 1px;
+  border: 1px solid;
   border-color: var(--primary-border);
   gap: 0.5rem;
+  border-top: none;
+  border-bottom: none;
   background-color: var(--primary-background);
+}
+
+.messageBox:first-of-type {
+  border-top-left-radius: $border-radius;
+  border-top-right-radius: $border-radius;
+  border-top: 1px solid var(--primary-border);
+}
+
+.messageBox:last-of-type {
+  border-bottom-left-radius: $border-radius;
+  border-bottom-right-radius: $border-radius;
+  border-bottom: 1px solid var(--primary-border);
 }
 
 .messageBox.alternate {
