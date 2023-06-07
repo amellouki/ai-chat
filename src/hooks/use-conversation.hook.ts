@@ -33,7 +33,7 @@ const useConversation = (onResponseComplete: (message: string) => void) => {
     return () => {
       socket.close()
     };
-  }, []);
+  }, [onResponseComplete]);
 
   return {completion, sendQuestion, resources};
 }

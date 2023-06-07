@@ -13,9 +13,9 @@ const ChatThread: FunctionComponent<ChatThreadProps> = ({chatHistory, completion
   return (
     <div className={styles.chatThread}>
       {chatHistory.map(({content, type}, key) => (
-        <MessageBox key={key} sender={type} alternate={key % 2 === 0} message={content}/>
+        <MessageBox key={key} sender={type} bubble={type === 'ai'} message={content}/>
       ))}
-      {completion && <MessageBox sender={"ai"} message={completion}/>}
+      {completion && <MessageBox sender={"ai"} bubble={true} message={completion}/>}
     </div>
   )
 }

@@ -2,15 +2,17 @@ import React, { FC } from 'react'
 import TextInput from '@/components/TextInput'
 import Button from '@/components/Button'
 import styles from './styles.module.scss'
+import clsx from "clsx";
 
 type QueryFormProps = {
   onSubmit: (query: string) => void;
+  className?: string;
 }
 
-const QueryForm: FC<QueryFormProps> = ({ onSubmit }) => {
+const QueryForm: FC<QueryFormProps> = ({ onSubmit, className }) => {
   return (
     <form
-      className={styles.form}
+      className={clsx(styles.form, className)}
       onSubmit={(e) => {
         e.preventDefault();
         const form = e.currentTarget;

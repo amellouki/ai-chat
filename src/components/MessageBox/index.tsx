@@ -1,23 +1,23 @@
-import React, { FunctionComponent, ReactElement } from "react";
+import React, {FunctionComponent, ReactElement} from "react";
 import clsx from "clsx";
 import styles from "./styles.module.scss";
 
 export type MessageBoxProps = {
   message: string;
   sender: string | ReactElement;
-  alternate?: boolean;
+  bubble?: boolean;
 };
 
 const MessageBox: FunctionComponent<MessageBoxProps> = ({
   message,
   sender,
-  alternate,
+  bubble,
 }) => {
   return (
     <div
       className={clsx(
         styles.messageBox,
-        alternate && styles.alternate
+        bubble && styles.bubble
       )}
     >
       <div className="flex-shrink-0">
