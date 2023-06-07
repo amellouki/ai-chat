@@ -6,9 +6,13 @@ Next.js AI chat client that connects you to a data-aware GPT powered [api servic
 
 Node 18.15.0
 
+## Variable Environment
+
+Create a `.env.local` file similar to `.env.example` and add your own variables.
+
 ## Getting Started
 
-First, run the development server:
+First install discrepancies with `npm i`, and the run the development server:
 
 ```bash
 npm run dev
