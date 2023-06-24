@@ -1,21 +1,22 @@
-import React, {FunctionComponent, useEffect} from 'react'
+import React, {FunctionComponent} from 'react'
 import MessageBox from '@/components/MessageBox'
 import styles from './styles.module.scss'
 import {ChatHistory} from "@/types/ChatRequest";
+import {Message} from "@/types/ChatThread";
 
 type ChatThreadProps = {
-  completion: string
+  response?: Omit<Message, 'id'>,
   chatHistory: ChatHistory
 }
 
-const ChatThread: FunctionComponent<ChatThreadProps> = ({chatHistory, completion}) => {
+const ChatThread: FunctionComponent<ChatThreadProps> = ({chatHistory, response}) => {
 
   return (
     <div className={styles.chatThread}>
-      {chatHistory.map(({content, type}, key) => (
-        <MessageBox key={key} sender={type} bubble={type === 'ai'} message={content}/>
+      {chatHistory.map((message, key) => (
+        <MessageBox key={key} message={message}/>
       ))}
-      {completion && <MessageBox sender={"ai"} bubble={true} message={completion}/>}
+      {response && <MessageBox bubble={true} message={response}/>}
     </div>
   )
 }

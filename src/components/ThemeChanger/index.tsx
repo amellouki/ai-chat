@@ -1,5 +1,6 @@
 import React, {FunctionComponent, useCallback, useEffect, useRef, useState} from 'react';
 import clsx from "clsx";
+import styles from "./styles.module.scss";
 
 const Themes = [
   'dark',
@@ -10,6 +11,12 @@ const ThemePreferences = [
   ...Themes,
   'system'
 ] as const
+
+const themeToIconMap = new Map([
+  ['dark', '🌙'],
+  ['light', '☀️'],
+  ['system', '🌓']
+])
 
 type ThemeType = typeof Themes[number]
 
@@ -58,7 +65,7 @@ const ThemeChanger: FunctionComponent = (props) => {
   }, [appendHandler, removeHandler])
   // TODO: Style button group & make it a11ble
   return (
-    <div>
+    <div className={styles.ThemeChanger}>
       {ThemePreferences.map((preference) => (
         <button
           onClick={() => updateTheme(preference)}
@@ -66,7 +73,7 @@ const ThemeChanger: FunctionComponent = (props) => {
           aria-pressed={preference === themePreference}
           className={clsx(preference === themePreference && 'active')}
           key={preference}>
-          {preference}
+          {themeToIconMap.get(preference)}
         </button>
       ))}
     </div>

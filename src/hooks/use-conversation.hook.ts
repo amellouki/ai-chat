@@ -1,26 +1,43 @@
 import {useCallback, useState} from 'react'
 import {ChatHistory} from "@/types/ChatRequest";
 import {io} from "socket.io-client";
+import {Message} from "@/types/ChatThread";
 
 const PATH = process.env.NEXT_PUBLIC_BACKEND_API + '/conversational-retrieval-qa'
 
-const useConversation = (onResponseComplete: (message: string) => void) => {
-  const [completion, setCompletion] = useState('');
+const useConversation = (
+  onQuestionReceived: (message: Message) => void,
+  onLatestResponseComplete: (message: Message) => void) => {
+  const [response, setResponse] = useState<Omit<Message, 'id'>>();
   const [resources, setResources] = useState<any>();
 
-  const sendQuestion = useCallback((history: ChatHistory, question: string) => {
+  const sendQuestion = useCallback((conversationId: number, question: string) => {
     const socket = io(PATH)
     socket.emit('getCompletion', {
-      history,
+      conversationId,
       question
     })
     socket.on('data', (data) => {
-      if (data.type === 'token' && data.params.chainType === 'question-answering') {
-        setCompletion((prev) => prev + data.content)
+      const tokenMessage = data.content as Omit<Message, 'id'>
+      // console.log('data', data)
+      if (data.type === 'token' && tokenMessage.type === 'response-token') {
+        setResponse((prev) => {
+          const newResponse = {
+            ...tokenMessage,
+            content: prev?.content + tokenMessage.content
+          }
+          return newResponse
+        })
+      }
+      if (data.type === 'retrieval') {
+        onLatestResponseComplete(data.content)
       }
       if (data.type === 'response') {
-        onResponseComplete(data.content)
-        setCompletion('')
+        onLatestResponseComplete(data.content)
+        setResponse(undefined)
+      }
+      if (data.type === 'question') {
+        onQuestionReceived(data.content)
       }
     })
     socket.on('error', (error) => {
@@ -33,9 +50,9 @@ const useConversation = (onResponseComplete: (message: string) => void) => {
     return () => {
       socket.close()
     };
-  }, [onResponseComplete]);
+  }, [onLatestResponseComplete]);
 
-  return {completion, sendQuestion, resources};
+  return {response, sendQuestion, resources};
 }
 
 export default useConversation

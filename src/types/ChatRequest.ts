@@ -1,12 +1,9 @@
-export type ChatMessage = {
-  content: string;
-  type: string;
-}
+import {Message} from "@/types/ChatThread";
 
-export type ChatHistory = ChatMessage[];
+export type ChatHistory = Message[];
 
 type ChatRequest = {
-  history: ChatHistory[];
+  conversationId: number;
   question: string;
 }
 
